@@ -16,7 +16,6 @@ import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -28,7 +27,7 @@ public class UserController {
     UserService userService;
 
     @GetMapping("list")
-    public ResponseEntity<List<UserModel>> getAllUsers(@RequestParam String param) {
+    public ResponseEntity<List<UserModel>> getAllUsers() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 
