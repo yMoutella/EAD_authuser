@@ -1,6 +1,12 @@
 server:
   port: 8087
-
+  tomcat:
+    accesslog:
+      enabled: true
+      pattern: "%h %l %u %t \"%r\" %s %b"
+      directory: "logs"
+      prefix: "access_log"
+      suffix: ".log"
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ead-authuser
