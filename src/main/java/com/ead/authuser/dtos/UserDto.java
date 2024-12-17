@@ -2,9 +2,13 @@ package com.ead.authuser.dtos;
 
 import java.util.UUID;
 
+import com.ead.authuser.validation.UsernameConstraint;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -20,27 +24,40 @@ public class UserDto {
 
     private UUID userId;
 
+    @NotBlank(groups = UserView.RegistrationPost.class)
+    @Size(min = 4, max = 50, groups = UserView.RegistrationPost.class)
+    @UsernameConstraint(groups = UserView.RegistrationPost.class)
     @JsonView({UserView.RegistrationPost.class})
     private String username;
 
+    @NotBlank(groups = UserView.RegistrationPost.class)
+    @Email
     @JsonView(UserView.RegistrationPost.class)
     private String email;
 
+    @NotBlank(groups = {UserView.PutPassword.class, UserView.RegistrationPost.class})
+    @Size(min = 6, max = 20, groups = {UserView.PutPassword.class, UserView.RegistrationPost.class})
     @JsonView({UserView.RegistrationPost.class, UserView.PutPassword.class})
     private String password;
 
+    // @NotBlank(groups = {UserView.PutPassword.class})
+    // @Size(min = 6, max = 20, groups = {UserView.PutPassword.class})
     @JsonView({UserView.PutUser.class})
     private String oldPassword;
 
+    @NotBlank
     @JsonView({UserView.RegistrationPost.class, UserView.PutUser.class})
     private String fullName;
 
+    @NotBlank
     @JsonView({UserView.RegistrationPost.class, UserView.PutUser.class})
     private String phoneNumber;
-
+    
+    @NotBlank(groups = {UserView.RegistrationPost.class, UserView.PutUser.class})
     @JsonView({UserView.RegistrationPost.class, UserView.PutUser.class})
     private String cpf;
 
+    @NotBlank(groups = {UserView.PutImage.class})
     @JsonView({UserView.RegistrationPost.class, UserView.PutImage.class})
     private String imageUrl;
 
