@@ -24,28 +24,26 @@ public class UserDto {
 
     private UUID userId;
 
-    @NotBlank(groups = UserView.RegistrationPost.class)
-    @Size(min = 4, max = 50, groups = UserView.RegistrationPost.class)
-    @UsernameConstraint(groups = UserView.RegistrationPost.class)
     @JsonView({UserView.RegistrationPost.class})
+    @Size(min=4, max=6)
+    @UsernameConstraint(groups = UserView.RegistrationPost.class)
     private String username;
 
-    @NotBlank(groups = UserView.RegistrationPost.class)
+    @NotBlank(message = "email must not be null!", groups = UserView.RegistrationPost.class)
     @Email
     @JsonView(UserView.RegistrationPost.class)
     private String email;
 
-    @NotBlank(groups = {UserView.PutPassword.class, UserView.RegistrationPost.class})
+    @NotBlank(message = "password must not be null!", groups = {UserView.PutPassword.class, UserView.RegistrationPost.class})
     @Size(min = 6, max = 20, groups = {UserView.PutPassword.class, UserView.RegistrationPost.class})
     @JsonView({UserView.RegistrationPost.class, UserView.PutPassword.class})
     private String password;
 
-    // @NotBlank(groups = {UserView.PutPassword.class})
-    // @Size(min = 6, max = 20, groups = {UserView.PutPassword.class})
     @JsonView({UserView.PutUser.class})
     private String oldPassword;
 
     @NotBlank
+    @Size(min=4, max=6)
     @JsonView({UserView.RegistrationPost.class, UserView.PutUser.class})
     private String fullName;
 

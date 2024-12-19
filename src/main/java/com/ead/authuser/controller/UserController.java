@@ -65,8 +65,8 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<Object> updateUser(
             @PathVariable UUID userId,
-            @Validated(UserView.PutUser.class)
-            @RequestBody @JsonView(UserView.PutUser.class) UserDto userDto) {
+            @Validated(UserDto.UserView.PutUser.class)
+            @RequestBody @JsonView(UserDto.UserView.PutUser.class) UserDto userDto) {
 
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (!userModelOptional.isPresent()) {

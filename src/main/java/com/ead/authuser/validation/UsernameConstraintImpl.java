@@ -11,9 +11,9 @@ public class UsernameConstraintImpl implements ConstraintValidator<UsernameConst
     }
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
+    public boolean isValid(String username, ConstraintValidatorContext context) {
 
-        if(value.trim().isEmpty() || value.contains(" ")|| value == null){
+        if(username.trim().isEmpty() || username.contains(" ")|| username == null){
             return false;
         }
         
