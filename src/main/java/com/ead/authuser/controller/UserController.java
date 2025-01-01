@@ -2,7 +2,6 @@ package com.ead.authuser.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,6 +22,7 @@ import com.ead.authuser.dtos.UserDto;
 import com.ead.authuser.dtos.UserDto.UserView;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
+import com.ead.authuser.specifications.SpecificationTemplate;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,10 +39,10 @@ public class UserController {
     UserService userService;
 
     @GetMapping("list")
-    public ResponseEntity<Page<UserModel>> getAllUsers(@PageableDefault(page = 0, size = 2, sort = "creationDate", direction = Sort.Direction.ASC)
-                                                        Pageable pageable) {
+    public ResponseEntity<?> getAllUsers(SpecificationTemplate.UserSpec spec,
+            @PageableDefault(page = 0, size = 10, sort = "creationDate", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<UserModel> userModelPage = userService.findAll(pageable);
+        Page<UserModel> userModelPage = userService.findAll(spec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(userModelPage);
     }
 
@@ -72,8 +72,7 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<Object> updateUser(
             @PathVariable UUID userId,
-            @Validated(UserDto.UserView.PutUser.class)
-            @RequestBody @JsonView(UserDto.UserView.PutUser.class) UserDto userDto) {
+            @Validated(UserDto.UserView.PutUser.class) @RequestBody @JsonView(UserDto.UserView.PutUser.class) UserDto userDto) {
 
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (!userModelOptional.isPresent()) {
@@ -97,13 +96,13 @@ public class UserController {
     @PutMapping("/{userId}/password")
     public ResponseEntity<Object> updatePassword(
             @PathVariable UUID userId,
-            @Validated(UserView.PutPassword.class)
-            @RequestBody @JsonView(UserView.PutPassword.class) UserDto userDto) {
+            @Validated(UserView.PutPassword.class) @RequestBody @JsonView(UserView.PutPassword.class) UserDto userDto) {
 
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (!userModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
-        } if(userModelOptional.get().getOldPassword().equals(userDto.getPassword())){
+        }
+        if (userModelOptional.get().getOldPassword().equals(userDto.getPassword())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Password already used!");
         }
 
@@ -113,7 +112,7 @@ public class UserController {
             userModel.setOldPassword(userModel.getPassword());
             userModel.setPassword(userDto.getPassword());
             userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-            
+
             userService.save(userModel);
 
             return ResponseEntity.status(HttpStatus.OK).body("Password updated successfully!");
@@ -124,19 +123,17 @@ public class UserController {
     @PutMapping("/{userId}/image")
     public ResponseEntity<Object> updateImage(
             @PathVariable UUID userId,
-            @Validated(UserView.PutImage.class)
-            @RequestBody @JsonView(UserView.PutImage.class) UserDto userDto) {
+            @Validated(UserView.PutImage.class) @RequestBody @JsonView(UserView.PutImage.class) UserDto userDto) {
 
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (!userModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
-        } 
-        else {
+        } else {
             var userModel = userModelOptional.get();
 
             userModel.setImageUrl(userDto.getImageUrl());
             userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-            
+
             userService.save(userModel);
 
             return ResponseEntity.status(HttpStatus.OK).body("Image updated successfully!");

@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.ead.authuser.models.UserModel;
@@ -23,10 +24,10 @@ public class UserServiceImplementation implements UserService {
     public List<UserModel> findAll() {
         return userRepository.findAll();
     }
-   
+
     @Override
     public Optional<UserModel> findById(UUID userId) {
-        return userRepository.findById(userId);        
+        return userRepository.findById(userId);
     }
 
     @Override
@@ -50,11 +51,8 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public Page<UserModel> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable) {
+        return userRepository.findAll(spec, pageable);
     }
-
-
-    
 
 }
