@@ -54,7 +54,7 @@ public class UserModel implements Serializable {
 
     @Column(nullable = false, length = 150)
     @Enumerated(EnumType.STRING)
-    private UserType UserType;
+    private UserType userType;
 
     @Column(length = 20)
     private String phoneNumber;
