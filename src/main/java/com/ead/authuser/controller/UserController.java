@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+
 import com.ead.authuser.dtos.UserDto;
 import com.ead.authuser.dtos.UserDto.UserView;
 import com.ead.authuser.models.UserModel;
@@ -39,10 +43,18 @@ public class UserController {
     UserService userService;
 
     @GetMapping("list")
-    public ResponseEntity<?> getAllUsers(SpecificationTemplate.UserSpec spec,
+    public ResponseEntity<Page<UserModel>> getAllUsers(SpecificationTemplate.UserSpec spec,
             @PageableDefault(page = 0, size = 10, sort = "creationDate", direction = Sort.Direction.ASC) Pageable pageable) {
 
         Page<UserModel> userModelPage = userService.findAll(spec, pageable);
+        
+        if(!userModelPage.isEmpty()){
+            userModelPage.toList().forEach(user -> {
+                user.add(linkTo(methodOn(UserController.class).getUser(user.getUserId())).withSelfRel());
+            });
+        }
+        
+
         return ResponseEntity.status(HttpStatus.OK).body(userModelPage);
     }
 
